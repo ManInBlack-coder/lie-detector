@@ -1,21 +1,19 @@
 {
-  "name": "face_detect",
+  "name": "lie-detector",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "@types/node": "^16.18.0",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "face-api.js": "^0.22.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.5",
+    "typescript": "^5.8.3",
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
