@@ -146,7 +146,7 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
             position: 'absolute',
             top: 0,
             left: 0,
-            transform: 'scaleX(-1)',
+            transform: 'scaleX(1)',
             maxWidth: '100%',
             height: 'auto'
           }} 
