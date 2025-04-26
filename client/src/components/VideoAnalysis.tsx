@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
-import { Message, Dimmer, Loader } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 
 interface VideoAnalysisProps {
   onEmotionsUpdate: (emotions: any) => void;
@@ -90,12 +90,15 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
           .withFaceLandmarks()
           .withFaceExpressions();
 
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
         if (detections && detections.length > 0) {
           const resizedDetections = faceapi.resizeResults(detections, displaySize);
           
-          const ctx = canvas.getContext('2d');
           if (ctx) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             faceapi.draw.drawDetections(canvas, resizedDetections);
             faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
           }
@@ -103,6 +106,17 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
           if (detections[0].expressions) {
             onEmotionsUpdate(detections[0].expressions);
           }
+        } else {
+          // Kui nägu ei tuvastatud, saadame neutraalsed emotsioonid
+          onEmotionsUpdate({
+            neutral: 1,
+            happy: 0,
+            sad: 0,
+            angry: 0,
+            fearful: 0,
+            disgusted: 0,
+            surprised: 0
+          });
         }
       } catch (error) {
         console.error('Näo tuvastamine ebaõnnestus:', error);
@@ -115,9 +129,33 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
   return (
     <div className="video-analysis" style={{ position: 'relative' }}>
       {!isModelLoaded && (
-        <Dimmer active>
-          <Loader>Laen mudeleid...</Loader>
-        </Dimmer>
+        <div 
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000
+          }}
+        >
+          <div style={{ color: 'white', textAlign: 'center' }}>
+            <div className="loading-spinner" style={{ 
+              width: '50px', 
+              height: '50px',
+              border: '3px solid #f3f3f3',
+              borderTop: '3px solid #3498db',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 10px auto'
+            }} />
+            <div>Laen mudeleid...</div>
+          </div>
+        </div>
       )}
       {error && (
         <Message negative>
@@ -135,7 +173,7 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
           muted
           onPlay={handleVideoPlay}
           style={{ 
-            transform: 'scaleX(-1)',
+            transform: 'scaleX(1)',
             maxWidth: '100%',
             height: 'auto'
           }}
@@ -152,6 +190,14 @@ const VideoAnalysis: React.FC<VideoAnalysisProps> = ({ onEmotionsUpdate }) => {
           }} 
         />
       </div>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 };
